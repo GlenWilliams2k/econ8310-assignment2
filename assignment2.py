@@ -37,5 +37,5 @@ pred1 = model.predict(xt)
 print(accuracy_score(yt, pred1)*100)
 
 # Convert pred to a pandas Series
-pred_series = pd.Series(pred)
-display(pred_series)
+pred = pd.Series(pred1)
+display(pred)
