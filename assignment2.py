@@ -38,4 +38,3 @@ print(accuracy_score(yt, pred1)*100)
 
 # Convert pred to a pandas Series
 pred = pd.Series(pred1)
-display(pred)
