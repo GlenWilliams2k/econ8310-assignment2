@@ -30,7 +30,7 @@ x, xt, y, yt = train_test_split(X, Y, test_size=0.1, random_state = 42)
 
 model = XGBClassifier(n_estimators = 50, max_depth = 5, learning_rate = 0.5, objective = 'binary:hinge')
 
-modelFit = model.fit(x,y)
+model.fit(x,y)
 
 # Validation accuracy
 val_preds = model.predict(xt)
