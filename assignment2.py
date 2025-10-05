@@ -20,28 +20,134 @@ dtrain = pd.read_csv("https://github.com/dustywhite7/Econ8310/raw/master/Assignm
 dtest = pd.read_csv("https://github.com/dustywhite7/Econ8310/raw/master/AssignmentData/assignment3test.csv")
 
 dtest.head(10)
+dtrain.head(10)
 
 #trying a boosted tree
 
-Y = dtrain['meal']
-X = dtrain.drop(['id','DateTime', 'Total', 'Discounts'], axis = 1)
+#Y = dtrain['meal']
+#X = dtrain.drop(['id','DateTime', 'Total', 'Discounts'], axis = 1)
 
-x, xt, y, yt = train_test_split(X, Y, test_size=0.1, random_state = 42)
+#x, xt, y, yt = train_test_split(X, Y, test_size=0.1, random_state = 42)
 
-model = XGBClassifier(n_estimators = 50, max_depth = 5, learning_rate = 0.5, objective = 'binary:hinge')
+#model = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.1, objective='binary:logistic')
 
-modelFit = model.fit(x,y)
+#modelFit = model.fit(X,Y)
 
 # Validation accuracy
-val_preds = model.predict(xt)
-print("Validation Accuracy: ", accuracy_score(yt, val_preds) * 100)
+#val_preds = model.predict(xt)
+#print("Validation Accuracy: ", accuracy_score(yt, val_preds) * 100)
 
 # Prepare dtest with the same features
-X_test = dtest.drop(['id','DateTime','Total','Discounts'], axis=1)
+#Yt = dtest['meal']
+#Xt = dtest.drop(['id','DateTime','Total','Discounts'], axis=1)
 
 # Predictions on dtest
-test_preds = model.predict(X_test)
+#test_preds = modelFit.predict(Xt)
 
 # Convert predictions to a pandas Series, align with ids if you want
-pred = pd.Series(test_preds, name="meal")
-pred.head(10)
+#pred = pd.Series(test_preds)
+#pred
+
+#this code has been assessed and correected by AI  (Gemini and ChatGPT)
+
+
+
+import pandas as pd
+
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import accuracy_score
+
+from datetime import datetime
+
+from xgboost import XGBClassifier
+
+
+
+data = pd.read_csv("https://github.com/dustywhite7/Econ8310/raw/master/AssignmentData/assignment3.csv")
+
+test_data = pd.read_csv("https://github.com/dustywhite7/Econ8310/raw/master/AssignmentData/assignment3test.csv")
+
+
+
+data = data.ffill()
+
+Y = data['meal']
+
+X = data.drop(['meal','id','DateTime'], axis=1)
+
+
+
+#x, xt, y, yt = train_test_split(X, Y, test_size=0.1, random_state=42)
+
+
+
+# Model
+
+model = XGBClassifier()
+
+modelFit = model.fit(X, Y)
+
+
+
+# Fill missing values
+
+test_data = test_data.ffill()
+
+Yt = test_data['meal']
+
+Xt = test_data.drop(['meal','id','DateTime'], axis=1)
+
+
+
+pred = model.predict(Xt)
+
+
+
+# Predict on 1000-row test data
+
+# Ensure test_data has the same columsn as the training data (x)
+
+# Get missing colummns from training data
+
+missing_cols = set(X.columns) - set(Xt.columns)
+
+
+
+# Add missing columns to test_data with 0
+
+for col in missing_cols:
+
+    test_data[col] = 0
+
+
+
+# Reorder columns in test_data to match training data
+
+test_data = test_data[X.columns]
+
+
+
+# Restrict test data to 1000 rows
+
+test_data = test_data.head(1000)
+
+
+
+# Predict on the test data
+
+# Return 0 or 1 predictions (not boolean T/F)
+
+# Return integers
+
+#pred = modelFit.predict_proba(test_data)[:, 1]
+
+pred = pd.Series(modelFit.predict(test_data))
+
+
+
+print(f"Generated {len(pred)} predictions.")
+
+print("Sample predictions:", pred[:10])
